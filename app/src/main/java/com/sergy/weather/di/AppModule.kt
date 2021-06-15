@@ -9,10 +9,10 @@ import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.sergy.weather.BuildConfig
 import com.sergy.weather.data.WeatherRepository
 import com.sergy.weather.data.WeatherRepositoryImpl
-import com.sergy.weather.data.remote.WeatherDatasource
 import com.sergy.weather.data.local.WeatherDatabase
 import com.sergy.weather.data.local.WeatherLocalDatasource
 import com.sergy.weather.data.local.WeatherLocalDatasourceImpl
+import com.sergy.weather.data.remote.WeatherRemoteDatasource
 import com.sergy.weather.data.remote.WeatherRemoteDatasourceImpl
 import com.sergy.weather.data.remote.api.ApiKeyInterceptor
 import com.sergy.weather.data.remote.api.WeatherApi
@@ -79,7 +79,7 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideWeatherRemoteDatasource(weatherService: WeatherApi): WeatherDatasource {
+    fun provideWeatherRemoteDatasource(weatherService: WeatherApi): WeatherRemoteDatasource {
         return WeatherRemoteDatasourceImpl(weatherService)
     }
 
@@ -98,7 +98,7 @@ class AppModule {
     @Singleton
     @Provides
     fun provideRepository(
-        weatherRemoteDatasource: WeatherDatasource,
+        weatherRemoteDatasource: WeatherRemoteDatasource,
         weatherLocalDatasource:WeatherLocalDatasource,
         sharedPreferences: SharedPreferences,
         networkHelper: NetworkChecker

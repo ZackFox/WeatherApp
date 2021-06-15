@@ -1,13 +1,12 @@
 package com.sergy.weather.data.remote
 
-import com.sergy.weather.data.WeatherDatasource
 import com.sergy.weather.data.remote.api.WeatherApi
 import com.sergy.weather.data.remote.dto.CurrentResponse
 import io.reactivex.Single
 import javax.inject.Inject
 
 class WeatherRemoteDatasourceImpl @Inject constructor(val weatherService: WeatherApi) :
-    WeatherDatasource {
+    WeatherRemoteDatasource {
     val TAG = "RemoteDatasourceImpl"
 
     override fun getCurrentWeather(city: String, lang: String, units: String): Single<CurrentResponse> {
@@ -33,10 +32,10 @@ class WeatherRemoteDatasourceImpl @Inject constructor(val weatherService: Weathe
 //    }
 
     companion object{
-        var INSTANCE: WeatherDatasource? = null
+        var INSTANCE: WeatherRemoteDatasource? = null
         val LOCK = Any();
 
-        fun getInstance(weatherService: WeatherApi): WeatherDatasource {
+        fun getInstance(weatherService: WeatherApi): WeatherRemoteDatasource {
             return INSTANCE ?: synchronized(LOCK) {
                 INSTANCE ?: WeatherRemoteDatasourceImpl(weatherService)
                     .also { INSTANCE = it }

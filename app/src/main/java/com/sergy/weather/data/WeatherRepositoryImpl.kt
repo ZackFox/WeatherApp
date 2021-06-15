@@ -2,23 +2,18 @@ package com.sergy.weather.data
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.sergy.weather.data.local.CurrentEntity
 import com.sergy.weather.data.local.WeatherLocalDatasource
-import com.sergy.weather.data.remote.WeatherDatasource
-import com.sergy.weather.data.remote.dto.CurrentResponse
+import com.sergy.weather.data.remote.WeatherRemoteDatasource
+
 import com.sergy.weather.data.remote.dto.toEntity
 import com.sergy.weather.utils.NetworkChecker
-import com.sergy.weather.utils.NetworkHelper
-import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
+
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
-    val remoteDatasource: WeatherDatasource,
+    val remoteDatasource: WeatherRemoteDatasource,
     val localDatasource: WeatherLocalDatasource,
     val sharedPreferences: SharedPreferences,
     val networkHelper: NetworkChecker
