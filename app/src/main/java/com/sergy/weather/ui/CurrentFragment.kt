@@ -1,6 +1,7 @@
 package com.sergy.weather.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import com.sergy.weather.R
 import com.sergy.weather.WeatherApplication
+import com.sergy.weather.data.local.CurrentEntity
+import kotlinx.android.synthetic.main.fragment_current.*
 import javax.inject.Inject
 
 // TODO: Rename parameter arguments, choose names that match
@@ -53,6 +56,40 @@ class CurrentFragment : Fragment() {
 
 
         viewModel.getCurrentWeather()
+
+
+        viewModel.dataLoading.observe(viewLifecycleOwner, {
+            if(!it) {
+                group_loading.visibility =  View.GONE
+                group_current.visibility = View.VISIBLE
+            }
+        })
+
+        viewModel.currentWeather.observe(viewLifecycleOwner, { setupUi(it) })
+    }
+
+    private fun setupUi(it: CurrentEntity) {
+        topToolBar1.title = it.cityName
+        topToolBar1.subtitle = it.timezone
+
+        view_temp.text = setTemperature(it.temperature.toInt().toString(), "M")
+        view_weather_desc.text = it.weatherDescription
+        feelsLikeValue.text = setTemperature(it.feelsLike.toString(),"M")
+        pressureValue.text = it.pressure.toString()
+        humidityValue.text = it.humidity.toString()
+        cloudsValue.text = it.clouds.toString()
+        visValue.text = it.visibility.toString()
+        windSpeedValue.text = it.windSpeed.toString()
+        windDirValue.text = it.windDirectionFull
+
+        GlideApp.with(this)
+            .load("https://www.weatherbit.io/static/img/icons/${it.weatherIcon}.png")
+            .into(weather_icon)
+    }
+
+    private fun setTemperature(temperature: String, units: String): String {
+        val _units = if (units == "M") "°C" else "°F"
+        return "${temperature}${_units}"
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package com.sergy.weather.ui
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,21 +12,23 @@ import io.reactivex.schedulers.Schedulers
 class CurrentViewModel(private val weatherRepository: WeatherRepository) : ViewModel()  {
     val TAG = "CurrentViewModel"
 
-    private val _currentWeather = MutableLiveData<CurrentEntity>()
-    val currentWeather : LiveData<CurrentEntity>
+    private var _currentWeather = MutableLiveData<CurrentEntity>()
+    val currentWeather: LiveData<CurrentEntity>
         get() = _currentWeather
 
-    private val _dataLoading = MutableLiveData<Boolean>()
+    private val _dataLoading = MutableLiveData<Boolean>(true)
     val dataLoading: LiveData<Boolean>
         get() = _dataLoading
 
+    @SuppressLint("CheckResult")
     fun getCurrentWeather() {
-        weatherRepository.getCurrentWeather("Moscow","ru","M")
+        weatherRepository.getCurrentWeather("Magnitogorsk","ru","M")
             .subscribeOn(Schedulers.io())
-            .subscribe({
-                Log.d(TAG,  it.data[0].toString())
+                .subscribe({
+                    _currentWeather.postValue(it)
+                    _dataLoading.postValue(false)
             },{
-                Log.d(TAG, "Error " + it.message.toString() )
+                    Log.d(TAG, "getCurrentWeather: ")
             })
     }
 }

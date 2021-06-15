@@ -1,5 +1,10 @@
 <resources>
-    <string name="app_name">Weather</string>
+    <string name="app_name">Погода</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="units">Метрика</string>
+    <string name="unit_system_title">Единицы измерения</string>
+    <string name="location">Местоположение</string>
+    <string name="custom_location_title">Указать местоположение</string>
+    <string name="custom_location_desc">Введите название места</string>
 </resources>
