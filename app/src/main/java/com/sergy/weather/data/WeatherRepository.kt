@@ -6,5 +6,5 @@ import com.sergy.weather.data.remote.dto.CurrentResponse
 import io.reactivex.Single
 
 interface WeatherRepository {
-    fun getCurrentWeather(city: String, lang: String, units: String) : Single<CurrentResponse>
+    fun getCurrentWeather(city: String, lang: String, units: String) : Single<CurrentEntity>
 }

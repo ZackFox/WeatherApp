@@ -2,11 +2,17 @@ package com.sergy.weather.di
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
+import androidx.room.Room
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.sergy.weather.BuildConfig
 import com.sergy.weather.data.WeatherRepository
 import com.sergy.weather.data.WeatherRepositoryImpl
-import com.sergy.weather.data.WeatherDatasource
+import com.sergy.weather.data.remote.WeatherDatasource
+import com.sergy.weather.data.local.WeatherDatabase
+import com.sergy.weather.data.local.WeatherLocalDatasource
+import com.sergy.weather.data.local.WeatherLocalDatasourceImpl
 import com.sergy.weather.data.remote.WeatherRemoteDatasourceImpl
 import com.sergy.weather.data.remote.api.ApiKeyInterceptor
 import com.sergy.weather.data.remote.api.WeatherApi
@@ -55,11 +61,7 @@ class AppModule {
         return retrofit.create(WeatherApi::class.java)
     }
 
-    @Singleton
-    @Provides
-    fun provideWeatherRemoteDatasource(weatherService: WeatherApi): WeatherDatasource {
-        return WeatherRemoteDatasourceImpl(weatherService)
-    }
+
 
     @Singleton
     @Provides
@@ -69,7 +71,38 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideRepository(weatherDatasource: WeatherDatasource): WeatherRepository {
-        return WeatherRepositoryImpl(weatherDatasource)
+    fun provideDatabase(context: Context): WeatherDatabase {
+        return Room.databaseBuilder(
+            context, WeatherDatabase::class.java, "InstantWeather.db"
+        ).build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideWeatherRemoteDatasource(weatherService: WeatherApi): WeatherDatasource {
+        return WeatherRemoteDatasourceImpl(weatherService)
+    }
+
+    @Singleton
+    @Provides
+    fun provideWeatherLocalDatasource(database: WeatherDatabase): WeatherLocalDatasource {
+        return WeatherLocalDatasourceImpl(database)
+    }
+
+    @Singleton
+    @Provides
+    fun provideSharedPreferences(context: Context): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+    }
+
+    @Singleton
+    @Provides
+    fun provideRepository(
+        weatherRemoteDatasource: WeatherDatasource,
+        weatherLocalDatasource:WeatherLocalDatasource,
+        sharedPreferences: SharedPreferences,
+        networkHelper: NetworkChecker
+    ): WeatherRepository {
+        return WeatherRepositoryImpl(weatherRemoteDatasource, weatherLocalDatasource, sharedPreferences, networkHelper)
     }
 }
