@@ -42,7 +42,11 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id: Int = item.getItemId()
         if (id == R.id.settings_button) {
-            // do something here
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container, SettingsFragment())
+                .addToBackStack(null)
+                .commit()
         }
         return super.onOptionsItemSelected(item)
     }
